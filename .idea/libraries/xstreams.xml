@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="xstreams">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Dev/instantclient_12_2/xstreams.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

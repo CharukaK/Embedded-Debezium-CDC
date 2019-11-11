@@ -2,20 +2,33 @@ package io.debezium;
 
 import io.debezium.config.Configuration;
 import io.debezium.embedded.EmbeddedEngine;
-import org.apache.kafka.connect.connector.ConnectRecord;
-
+import java.lang.annotation.Target;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.kafka.connect.connector.ConnectRecord;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 
-
+@Component(
+        service = App.class,
+        immediate = true
+)
 public class App {
 
-    public static void main(String[] args) {
-        org.apache.log4j.BasicConfigurator.configure(); //uncomment this line to show more execution details
+//    public static void main(String[] args) {
+//        org.apache.log4j.BasicConfigurator.configure(); //uncomment this line to show more execution details
+//        (new App()).runOracleCDC();
+//    }
+
+    @Activate
+    public void startUpMethod() {
+//        org.apache.log4j.BasicConfigurator.configure(); //uncomment this line to show more execution details
         (new App()).runOracleCDC();
     }
 
     public void runOracleCDC() {
+        System.setProperty("LD_LIBRARY_PATH","/root/instantclient_12_2/");
+        System.setProperty("java.library.path","/root/instantclient_12_2/");
         System.out.println("library path: " + System.getProperty("LD_LIBRARY_PATH"));
 
         // Define the configuration for the embedded and Oracle connector ...
@@ -24,33 +37,60 @@ public class App {
         //unsupported data types will throw parsing error
         //primary key must be added to the table which is monitored.
         Configuration config = Configuration.create()
+                .with("name", "test1")
+                .with("tasks.max", "1")
+                .with("database.server.name", "server1")
+                .with("database.hostname", "10.100.5.219")
+                .with("database.port", 1521)
+                .with("database.user", "c##xstrm")
+                .with("database.password", "xs")
+                .with("database.dbname","ORCLCDB")
+                .with("database.pdb.name","ORCLPDB1")
+                .with("database.out.server.name", "dbzxout")
                 .with("connector.class", "io.debezium.connector.oracle.OracleConnector")
+                .with("offset.storage",
+                        "org.apache.kafka.connect.storage.FileOffsetBackingStore")
+                .with("offset.storage.file.filename",
+                        "/Users/charukak/TestProjects/Embedded-Debezium-CDC/offset.dat") //provide per your environment.
+                .with("database.history",
+                        "io.debezium.relational.history.FileDatabaseHistory")
+                .with("database.history.file.filename",
+                        "/Users/charukak/TestProjects/Embedded-Debezium-CDC/history.dat") //provide per your environment.
+                .with("table.whitelist", "ORCLPDB1.DEBEZIUM.sweetproductiontable")
+                .build();
+//                .with("database.tablename.case.insensitive", true)
+
+
+        /*
+        * .with("connector.class", "io.debezium.connector.oracle.OracleConnector")
                 .with("tasks.max", "1")
                 .with("offset.storage",
                         "org.apache.kafka.connect.storage.FileOffsetBackingStore")
                 .with("offset.storage.file.filename",
-                        "/home/chathuranga/oracleLogs/offset5.dat") //provide per your environment.
+                        "/Users/charukak/TestProjects/Embedded-Debezium-CDC/offsetNewnew1.dat") //provide per your environment.
                 .with("offset.flush.interval.ms", 2000)
                 .with("name", "oracle_debezium_connector")
                 .with("database.hostname", "localhost") //provide docker ip address if docker container db is used.
                 .with("database.port", "1521")
                 .with("database.user", "c##xstrm")
                 .with("database.password", "xs")
-                .with("database.sid", "ORCLCDB")
+                .with("database.sid", "ORCLCDB").with("table.whitelist", "customers" )
                 .with("database.server.name", "mServer")
                 .with("database.out.server.name", "dbzxout")
                 .with("database.history",
                         "io.debezium.relational.history.FileDatabaseHistory")
                 .with("database.history.file.filename",
-                        "/home/chathuranga/oracleLogs/dbhistory3.dat") //provide per your environment.
+                        "/Users/charukak/TestProjects/Embedded-Debezium-CDC/dbhistory3.dat") //provide per your environment.
                 .with("database.dbname", "ORCLCDB")
                 .with("database.pdb.name", "ORCLPDB1")
-                .with("table.whitelist", "CUSTOMERS" )
-                .build();
+
+        *
+        * */
 
         EmbeddedEngine.CompletionCallback completionCallback = (b, s, throwable) -> {
             System.out.println("---------------------------------------------------");
-            System.out.println("success status: " + b + ", message : " + s + ", Error: " + throwable);
+            System.out.println("success status: " + b + "\n, message : " + s + "\n" +
+                    ", Error: " + throwable);
         };
 
         //Just for development purposes.
@@ -100,6 +140,13 @@ public class App {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(engine);
 
+        try {
+            Thread.sleep(10000);
+            AllLoadedNativeLibrariesInJVM.listAllLoadedNativeLibrariesFromJVM();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         //After some time or operations, stop the engine.
         //engine.stop();
     }
@@ -116,7 +163,7 @@ public class App {
                 .with("offset.storage",
                         "org.apache.kafka.connect.storage.FileOffsetBackingStore")
                 .with("offset.storage.file.filename",
-                        "/home/chathuranga/mysqlLogs/offsetNewnew1.dat")
+                        "/Users/charukak/TestProjects/Embedded-Debezium-CDC/offsetNewnew1.dat")
                 .with("offset.flush.interval.ms", 1000)
                 /* begin connector properties */
                 .with("name", "mySqlConnector")
@@ -124,12 +171,12 @@ public class App {
                 .with("database.port", 3306)
                 .with("database.user", "root")
                 .with("database.password", "1234")
-                .with("server.id", 5756)  //.with("server.id", 85743)
+                .with("server.id", 5756)
                 .with("database.server.name", "mySqlConnectorServer")
                 .with("database.history",
                         "io.debezium.relational.history.FileDatabaseHistory")
                 .with("database.history.file.filename",
-                        "/home/chathuranga/mysqlLogs/dbhistoryNewnew1.dat").build();
+                        "/Users/charukak/TestProjects/Embedded-Debezium-CDC/dbhistoryNewnew1.dat").build();
 
 
         EmbeddedEngine.CompletionCallback callback = (b, s, throwable) -> {
@@ -148,9 +195,13 @@ public class App {
         // Run the engine asynchronously ...
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(engine);
+
+
+
+
     }
 
     public void handleEvent(ConnectRecord connectRecord) {
-        System.out.println(connectRecord);
+        System.out.println("haha :::::: " + connectRecord);
     }
 }

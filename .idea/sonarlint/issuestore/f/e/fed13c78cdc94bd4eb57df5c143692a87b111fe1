@@ -1,0 +1,27 @@
+
+O
+squid:S106o"9Replace this use of System.out or System.err by a logger.(Ñ¾õ€
+Gsquid:S1148“"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8²ë†´ã-
+O
+squid:S106["9Replace this use of System.out or System.err by a logger.(³‘Š×
+csquid:CommentedOutCodeLine—"<This block of commented-out lines of code should be removed.(¸ÛèÐ
+V
+squid:S106 "9Replace this use of System.out or System.err by a logger.(þöâò8ïÔ¬ã-
+U
+squid:S106Í"9Replace this use of System.out or System.err by a logger.(µ·Òªýÿÿÿÿ
+O
+squid:S106w"9Replace this use of System.out or System.err by a logger.(ÝÒ†
+T
+squid:S106\"9Replace this use of System.out or System.err by a logger.(Í›”úûÿÿÿÿ
+hsquid:UselessImportCheck"8Remove this unused import 'java.lang.annotation.Target'.(†üïÍûÿÿÿÿ8À¦³Ðã-
+T
+squid:S106g"9Replace this use of System.out or System.err by a logger.(¶‚íŽþÿÿÿÿ
+T
+squid:S106"9Replace this use of System.out or System.err by a logger.(ÙëÉ¹úÿÿÿÿ
+U
+squid:S106¸"9Replace this use of System.out or System.err by a logger.(ÝÚœ»úÿÿÿÿ
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(»ž•ûÿÿÿÿ8Å¹½Ðã-
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¢šˆ²úÿÿÿÿ8Å¹½Ðã-
+esquid:S2142’"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€8²ë†´ã-
+P
+squid:S106·"9Replace this use of System.out or System.err by a logger.(³‘Š×
